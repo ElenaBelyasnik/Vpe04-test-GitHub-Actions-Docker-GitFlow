@@ -19,3 +19,8 @@
 - Джоба `build-push`: сборка и пуш образа в GitHub Container Registry
 - Джоба `deploy`: SSH на сервер, pull образа и развёртывание контейнера
 - Обновлён `README.md` с таблицей секретов и инструкцией
+
+## [Pull Request и откат коммитов]
+- Создан Pull Request для ветки `fiature/datetime`
+- Выполнен откат коммитов на локальной и удалённой ветке с сохранением изменений
+- Добавлены разрешения `repo` и `workflow` для Personal Access Token
