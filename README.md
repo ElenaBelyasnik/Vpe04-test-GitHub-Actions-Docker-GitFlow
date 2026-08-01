@@ -40,5 +40,28 @@
    ```
 
 3. Откройте в браузере:
-   - [http://127.0.0.1:8000/time](http://127.0.0.1:8000/time)
-   - [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) — Swagger UI
+    - [http://127.0.0.1:8000/time](http://127.0.0.1:8000/time)
+    - [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) — Swagger UI
+
+## CI/CD — GitHub Actions
+
+Workflow настроен в `.github/workflows/deploy.yml`. Он состоит из двух джоб:
+
+1. **build-push** — собирает Docker-образ и пушит его в GitHub Container Registry.
+2. **deploy** — подключается к серверу по SSH, скачивает образ и разворачивает контейнер.
+
+### Необходимые секреты репозитория
+
+Настройте в **Settings → Secrets and variables → Actions**:
+
+| Секрет | Описание |
+|---|---|
+| `GITHUB_TOKEN` | Создаётся автоматически, используется для логина в GHCR |
+| `SSH_HOST` | IP-адрес или домен сервера |
+| `SSH_USERNAME` | Имя пользователя для SSH |
+| `SSH_PRIVATE_KEY` | Приватный SSH-ключ (формат `-----BEGIN OPENSSH PRIVATE KEY-----`) |
+| `SSH_PORT` | Порт SSH (по умолчанию `22`) |
+
+### Ручной запуск
+
+Можно запустить workflow через **Actions → "Build and Deploy" → Run workflow**.
