@@ -10,3 +10,4 @@ ENV/
 dist/
 build/
 .pytest_cache/
+drafts/
