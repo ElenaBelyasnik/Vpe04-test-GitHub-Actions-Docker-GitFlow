@@ -21,6 +21,22 @@
    uvicorn main:app --reload
    ```
 
-4. Откройте в браузере:
+ 4. Откройте в браузере:
+    - [http://127.0.0.1:8000/time](http://127.0.0.1:8000/time)
+    - [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) — Swagger UI
+
+## Запуск через Docker
+
+1. Соберите образ:
+   ```bash
+   docker build -t fastapi-app .
+   ```
+
+2. Запустите контейнер:
+   ```bash
+   docker run -p 8000:8000 fastapi-app
+   ```
+
+3. Откройте в браузере:
    - [http://127.0.0.1:8000/time](http://127.0.0.1:8000/time)
    - [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) — Swagger UI

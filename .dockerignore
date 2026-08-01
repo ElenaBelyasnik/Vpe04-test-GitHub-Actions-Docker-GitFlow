@@ -1,0 +1,28 @@
+# Виртуальное окружение
+.venv/
+__pycache__/
+*.pyc
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Документация
+ProgressOfWork.md
+README.md
+
+# Черновики
+drafts/
