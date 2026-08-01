@@ -24,3 +24,10 @@
 - Создан Pull Request для ветки `fiature/datetime`
 - Выполнен откат коммитов на локальной и удалённой ветке с сохранением изменений
 - Добавлены разрешения `repo` и `workflow` для Personal Access Token
+
+## [Merge в main и CI/CD]
+- Создан Pull Request `fiature/datetime` → `main`
+- Merge выполнен успешно
+- Настроены секреты GitHub Actions: `SSH_HOST`, `SSH_USERNAME`, `SSH_PRIVATE_KEY`, `SSH_PORT`
+- На сервере установлен Docker
+- Workflow `Build and Deploy` работает успешно
