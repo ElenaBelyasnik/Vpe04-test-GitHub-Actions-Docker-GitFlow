@@ -65,3 +65,33 @@ Workflow настроен в `.github/workflows/deploy.yml`. Он состоит
 ### Ручной запуск
 
 Можно запустить workflow через **Actions → "Build and Deploy" → Run workflow**.
+
+## Возникшие проблемы и их решение
+
+### 1. Не отправлялся push из-за прав токена
+**Проблема:** VS Code использовал токен без прав на изменение файлов в `.github/workflows/`.
+**Решение:** создали новый Personal Access Token с правами `repo` и `workflow`.
+
+### 2. Force push не сработал — ветка не сдвинулась
+**Проблема:** `git reset --soft` откатил коммит, но изменения остались в staging area. Удалённая ветка осталась на старом коммите.
+**Решение:** выполнили `git reset --soft HEAD~1` → `git push --force-with-lease`.
+
+### 3. Git отказывался пушить — локальная и удалённая ветки разошлись
+**Проблема:** кто-то сделал push после force push, и Git не мог объединить изменения.
+**Решение:** `git pull` → `git push`.
+
+### 4. Контейнер не запускался на сервере — Docker не был установлен
+**Проблема:** на сервере не было Docker, поэтому deploy падал.
+**Решение:** установили Docker через `apt install -y docker-ce docker-ce-cli containerd.io`.
+
+### 5. Образ не загружался на сервер через `docker pull`
+**Проблема:** GHCR хранил образ с именем репозитория в верхнем регистре, но Docker требует только строчные буквы. Тег `latest` не был установлен.
+**Решение:** собрали образ локально → `docker save` → скопировали на сервер через `scp` → `docker load` → `docker run`.
+
+### 6. CI/CD не работал — deploy падал
+**Проблема:** в workflow `IMAGE_NAME` брался из `${{ github.repository }}` — с заглавными буквами. Docker не мог найти образ из-за регистра.
+**Решение:** заменили на строчные буквы: `elena-belyasnik/vpe04-test-github-actions-docker-gitflow`.
+
+### 7. Конфликт имён в Docker
+**Проблема:** `ghcr.io/ElenaBelyasnik/...` — Docker требует lowercase. `ghcr.io/elena-belyasnik/...` — Docker ищет образ, но образ в реестре с оригинальным именем.
+**Решение:** загрузили образ вручную через `docker save/load`, а в workflow исправили имена на строчные.
