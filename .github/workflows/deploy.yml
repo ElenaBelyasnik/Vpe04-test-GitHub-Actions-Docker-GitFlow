@@ -8,7 +8,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: elenabelyasnik/vpe04-app
 
 jobs:
   # ===================== ДЖОБА 1: СБОРКА И ПУШ В GHCR =====================
@@ -17,17 +16,27 @@ jobs:
     permissions:
       contents: read
       packages: write
+    outputs:
+      image: ${{ steps.set-name.outputs.image }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Set lowercase image name
+        id: set-name
+        run: |
+          REPO="${{ github.repository }}"
+          IMAGE="ghcr.io/${REPO,,}"
+          echo "image=$IMAGE" >> $GITHUB_OUTPUT
+          echo "IMAGE=$IMAGE" >> $GITHUB_ENV
 
       - name: Build and push Docker image
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "$GITHUB_TOKEN" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker build -t ghcr.io/elenabelyasnik/vpe04-app:main .
-          docker push ghcr.io/elenabelyasnik/vpe04-app:main
+          docker build -t ${{ env.IMAGE }}:main .
+          docker push ${{ env.IMAGE }}:main
 
   # ===================== ДЖОБА 2: РАЗВЁРТЫВАНИЕ НА СЕРВЕРЕ =====================
   deploy:
@@ -46,15 +55,12 @@ jobs:
             # Логинимся в GHCR через GITHUB_TOKEN
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
-            # Образ пушится с тегами: sha-xxxxx и latest (для main ветки)
-            # Используем :latest — он всегда создаётся metadata-action для main
-            IMAGE_TAG="ghcr.io/elenabelyasnik/vpe04-app:main"
+            IMAGE_TAG="${{ needs.build-push.outputs.image }}:main"
 
             # Скачиваем свежий образ
             docker pull $IMAGE_TAG
 
-            # Разворачиваем новый контейнер
-            # Останавливаем и удаляем старый, если есть
+            # Останавливаем и удаляем старый контейнер, если есть
             docker stop fastapi-app || true
             docker rm fastapi-app || true
 
