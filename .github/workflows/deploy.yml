@@ -24,8 +24,8 @@ jobs:
       - name: Build and push Docker image
         run: |
           docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
-          docker build -t ghcr.io/elena-belyasnik/vpe04-test-github-actions-docker-gitflow:main .
-          docker push ghcr.io/elena-belyasnik/vpe04-test-github-actions-docker-gitflow:main
+          docker build -t ghcr.io/elena-belyasnik/vpe04-app:main .
+          docker push ghcr.io/elena-belyasnik/vpe04-app:main
 
   # ===================== ДЖОБА 2: РАЗВЁРТЫВАНИЕ НА СЕРВЕРЕ =====================
   deploy:
@@ -46,7 +46,7 @@ jobs:
 
             # Образ пушится с тегами: sha-xxxxx и latest (для main ветки)
             # Используем :latest — он всегда создаётся metadata-action для main
-            IMAGE_TAG="ghcr.io/elena-belyasnik/vpe04-test-github-actions-docker-gitflow:main"
+            IMAGE_TAG="ghcr.io/elena-belyasnik/vpe04-app:main"
 
             # Скачиваем свежий образ
             docker pull $IMAGE_TAG
