@@ -29,19 +29,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: ${{ github.event_name == 'push' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/vpe04-test-github-actions-docker-gitflow:main
+          provenance: false
+          attestations: false
 
   # ===================== ДЖОБА 2: РАЗВЁРТЫВАНИЕ НА СЕРВЕРЕ =====================
   deploy:
