@@ -56,7 +56,7 @@ Workflow настроен в `.github/workflows/deploy.yml`. Он состоит
 
 | Секрет | Описание |
 |---|---|
-| `GITHUB_TOKEN` | Создаётся автоматически, используется для логина в GHCR |
+| `GITHUB_TOKEN` | Создаётся автоматически GitHub, используется для логина в GHCR. Секрет настраивать не нужно. |
 | `SSH_HOST` | IP-адрес или домен сервера |
 | `SSH_USERNAME` | Имя пользователя для SSH |
 | `SSH_PRIVATE_KEY` | Приватный SSH-ключ (формат `-----BEGIN OPENSSH PRIVATE KEY-----`) |
@@ -95,3 +95,8 @@ Workflow настроен в `.github/workflows/deploy.yml`. Он состоит
 ### 7. Конфликт имён в Docker
 **Проблема:** `ghcr.io/ElenaBelyasnik/...` — Docker требует lowercase. `ghcr.io/elena-belyasnik/...` — Docker ищет образ, но образ в реестре с оригинальным именем.
 **Решение:** загрузили образ вручную через `docker save/load`, а в workflow исправили имена на строчные.
+
+### 8. Образ не пушится в GHCR — `owner not found`
+**Проблема:** после переименования репозитория пуш в GHCR падал с `denied: not_found: owner not found`.
+**Причина:** в workflow использовалось имя владельца `elena-belyasnik` (с дефисом), но GitHub-логин `ElenaBelyasnik` в lowercase — `elenabelyasnik` (без дефиса). GHCR не нашёл такого владельца.
+**Решение:** исправили имя во всём workflow на `elenabelyasnik`, удалили старый orphaned-пакет, перезапустили workflow — обе джобы прошли успешно.

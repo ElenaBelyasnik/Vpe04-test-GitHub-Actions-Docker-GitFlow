@@ -34,7 +34,7 @@
 
 ---
 
-## [ТЕКУЩАЯ ПРОБЛЕМА: образ не пушится в GHCR — `owner not found`]
+## [РЕШЕНО: образ не пушится в GHCR — `owner not found`]
 
 ### Что произошло
 После переименования репозитория (с `Vpe04-test-GitHub-Actions-Docker-GitFlow` на `vpe04-test-github-actions-docker-gitflow`) пуш Docker-образа в GitHub Container Registry (GHCR) перестал работать. Сборка проходит успешно, `docker login` — тоже, но `docker push` падает с ошибкой:
@@ -72,11 +72,24 @@ denied: not_found: owner not found
 
 ### Что делать дальше
 1. ✅ Исправить workflow: заменить `elena-belyasnik` → `elenabelyasnik` везде.
-2. Удалить старый orphaned-пакет `vpe04-test-github-actions-docker-gitflow` на GitHub (профиль → Packages).
-3. Запустить workflow заново и проверить, что пуш проходит.
+2. ✅ Удалить старый orphaned-пакет `vpe04-test-github-actions-docker-gitflow` на GitHub (профиль → Packages).
+3. ✅ Запустить workflow заново и проверить, что пуш проходит.
+
+### Результат
+- Коммит `3425b70` запушен в `main`.
+- Workflow `Build and Deploy` отработал успешно — обе джобы зелёные.
+- Образ `ghcr.io/elenabelyasnik/vpe04-app:main` успешно запушен в GHCR.
+- Контейнер развёрнут на сервере.
+
+## [Возврат на GITHUB_TOKEN]
+- Убран отладочный шаг `Debug GHCR permissions` — больше не нужен.
+- В джобе `build-push`: `CR_PAT` заменён на автоматический `GITHUB_TOKEN`.
+- В джобе `deploy`: `CR_PAT` заменён на `GITHUB_TOKEN`.
+- Секрет `CR_PAT` больше не используется — можно удалить из настроек репозитория.
+- `permissions: packages: write` в `build-push` обеспечивает право на пуш в GHCR.
 
 ### Текущее состояние workflow
 - `.github/workflows/deploy.yml` использует ручной `docker build` + `docker push` (без `build-push-action`).
 - Имя образа: `ghcr.io/elenabelyasnik/vpe04-app:main`
-- Секрет `CR_PAT` добавлен в репозиторий.
+- Для логина в GHCR используется автоматический `GITHUB_TOKEN` (без PAT).
 - Ветка `main` актуальна, все изменения запушены.
