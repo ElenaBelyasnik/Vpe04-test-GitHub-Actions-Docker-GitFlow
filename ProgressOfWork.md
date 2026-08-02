@@ -62,15 +62,21 @@ denied: not_found: owner not found
 2. На аккаунте остались **orphaned-пакеты** от старого имени репозитория — их нужно удалить (GitHub → профиль → Packages).
 3. В **Settings → Actions → General → Workflow permissions** не стоит «Read and write permissions».
 
+### Найденная причина
+Логи отладочного шага `Debug GHCR permissions` показали:
+- Токен **имеет** `write:packages` и `delete:packages` — с токеном всё в порядке.
+- GitHub-логин пользователя: `ElenaBelyasnik` (CamelCase, **без дефиса**).
+- В lowercase это `elenabelyasnik`.
+- В workflow использовалось `elena-belyasnik` (**с дефисом**) — такого владельца в GHCR не существует → `owner not found`.
+- Существующий пакет в GHCR: `vpe04-test-github-actions-docker-gitflow` (orphaned, привязан к старому имени репозитория).
+
 ### Что делать дальше
-1. Посмотреть лог отладочного шага `Debug GHCR permissions`.
-2. Если у токена нет `write:packages` — пересоздать PAT с правами `repo`, `write:packages`, `read:packages` и обновить секрет `CR_PAT`.
-3. Удалить все старые пакеты на GitHub (профиль → Packages), которые связаны с этим репозиторием.
-4. Проверить **Workflow permissions** в настройках репозитория.
-5. Если ничего не поможет — попробовать создать пакет вручную через GitHub API (`curl`) от имени пользователя, чтобы проверить, может ли аккаунт вообще публиковать пакеты.
+1. ✅ Исправить workflow: заменить `elena-belyasnik` → `elenabelyasnik` везде.
+2. Удалить старый orphaned-пакет `vpe04-test-github-actions-docker-gitflow` на GitHub (профиль → Packages).
+3. Запустить workflow заново и проверить, что пуш проходит.
 
 ### Текущее состояние workflow
 - `.github/workflows/deploy.yml` использует ручной `docker build` + `docker push` (без `build-push-action`).
-- Имя образа: `ghcr.io/elena-belyasnik/vpe04-app:main`
+- Имя образа: `ghcr.io/elenabelyasnik/vpe04-app:main`
 - Секрет `CR_PAT` добавлен в репозиторий.
 - Ветка `main` актуальна, все изменения запушены.

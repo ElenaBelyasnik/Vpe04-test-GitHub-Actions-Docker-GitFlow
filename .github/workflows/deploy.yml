@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: elena-belyasnik/vpe04-test-github-actions-docker-gitflow
+  IMAGE_NAME: elenabelyasnik/vpe04-app
 
 jobs:
   # ===================== ДЖОБА 1: СБОРКА И ПУШ В GHCR =====================
@@ -41,8 +41,8 @@ jobs:
           CR_PAT: ${{ secrets.CR_PAT }}
         run: |
           echo "$CR_PAT" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker build -t ghcr.io/elena-belyasnik/vpe04-app:main .
-          docker push ghcr.io/elena-belyasnik/vpe04-app:main
+          docker build -t ghcr.io/elenabelyasnik/vpe04-app:main .
+          docker push ghcr.io/elenabelyasnik/vpe04-app:main
 
   # ===================== ДЖОБА 2: РАЗВЁРТЫВАНИЕ НА СЕРВЕРЕ =====================
   deploy:
@@ -63,7 +63,7 @@ jobs:
 
             # Образ пушится с тегами: sha-xxxxx и latest (для main ветки)
             # Используем :latest — он всегда создаётся metadata-action для main
-            IMAGE_TAG="ghcr.io/elena-belyasnik/vpe04-app:main"
+            IMAGE_TAG="ghcr.io/elenabelyasnik/vpe04-app:main"
 
             # Скачиваем свежий образ
             docker pull $IMAGE_TAG
