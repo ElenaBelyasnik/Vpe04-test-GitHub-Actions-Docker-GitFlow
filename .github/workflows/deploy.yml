@@ -47,7 +47,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build-push
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1
@@ -58,11 +58,11 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             # Логинимся в GHCR
-            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
-            # Определяем тег образа (берём SHA коммита)
-            IMAGE_TAG="ghcr.io/elena-belyasnik/vpe04-test-github-actions-docker-gitflow:${{ github.sha }}"
-            LATEST_TAG="ghcr.io/elena-belyasnik/vpe04-test-github-actions-docker-gitflow:latest"
+            # Образ пушится с тегами: sha-xxxxx и latest (для main ветки)
+            # Используем :latest — он всегда создаётся metadata-action для main
+            IMAGE_TAG="ghcr.io/elena-belyasnik/vpe04-test-github-actions-docker-gitflow:latest"
 
             # Скачиваем свежий образ
             docker pull $IMAGE_TAG
