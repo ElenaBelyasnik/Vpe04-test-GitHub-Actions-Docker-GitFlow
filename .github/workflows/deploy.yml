@@ -21,6 +21,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Debug GHCR permissions
+        env:
+          CR_PAT: ${{ secrets.CR_PAT }}
+        run: |
+          echo "=== github.actor ==="
+          echo "${{ github.actor }}"
+          echo "=== github.repository_owner ==="
+          echo "${{ github.repository_owner }}"
+          echo "=== Token scopes (from API response headers) ==="
+          curl -sI -H "Authorization: token $CR_PAT" https://api.github.com/user | grep -i "x-oauth-scopes"
+          echo "=== User info ==="
+          curl -s -H "Authorization: token $CR_PAT" https://api.github.com/user | grep -E '"login"|"id"'
+          echo "=== Existing packages ==="
+          curl -s -H "Authorization: token $CR_PAT" "https://api.github.com/user/packages?package_type=container" | head -50
+
       - name: Build and push Docker image
         env:
           CR_PAT: ${{ secrets.CR_PAT }}
