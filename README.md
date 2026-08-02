@@ -100,3 +100,8 @@ Workflow настроен в `.github/workflows/deploy.yml`. Он состоит
 **Проблема:** после переименования репозитория пуш в GHCR падал с `denied: not_found: owner not found`.
 **Причина:** в workflow использовалось имя владельца `elena-belyasnik` (с дефисом), но GitHub-логин `ElenaBelyasnik` в lowercase — `elenabelyasnik` (без дефиса). GHCR не нашёл такого владельца.
 **Решение:** исправили имя во всём workflow на `elenabelyasnik`, удалили старый orphaned-пакет, перезапустили workflow — обе джобы прошли успешно.
+
+### 9. `GITHUB_TOKEN` не мог пушить в GHCR — `permission_denied: write_package`
+**Проблема:** после перехода с PAT (`CR_PAT`) на автоматический `GITHUB_TOKEN` пуш падал с `denied: permission_denied: write_package`.
+**Причина:** имя образа `ghcr.io/elenabelyasnik/vpe04-app` было привязано к пользователю, а `GITHUB_TOKEN` может пушить только в пакеты, привязанные к репозиторию.
+**Решение:** имя образа формируется динамически из `github.repository` в lowercase → `ghcr.io/elenabelyasnik/vpe04-test-github-actions-docker-gitflow:main`. Пакет автоматически привязывается к репозиторию, и `GITHUB_TOKEN` получает право на пуш.

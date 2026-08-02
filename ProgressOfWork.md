@@ -85,11 +85,16 @@ denied: not_found: owner not found
 - Убран отладочный шаг `Debug GHCR permissions` — больше не нужен.
 - В джобе `build-push`: `CR_PAT` заменён на автоматический `GITHUB_TOKEN`.
 - В джобе `deploy`: `CR_PAT` заменён на `GITHUB_TOKEN`.
+- Имя образа формируется динамически из `github.repository` в lowercase — `GITHUB_TOKEN` может пушить только в пакеты, привязанные к репозиторию.
 - Секрет `CR_PAT` больше не используется — можно удалить из настроек репозитория.
 - `permissions: packages: write` в `build-push` обеспечивает право на пуш в GHCR.
+- Коммиты `802f052` и `9198317` запушены в `main`.
+- Workflow `Build and Deploy` отработал успешно — обе джобы зелёные.
+- Образ `ghcr.io/elenabelyasnik/vpe04-test-github-actions-docker-gitflow:main` успешно запушен в GHCR через `GITHUB_TOKEN`.
+- Контейнер развёрнут на сервере, приложение работает по адресу `http://80.78.245.171:8000`.
 
 ### Текущее состояние workflow
 - `.github/workflows/deploy.yml` использует ручной `docker build` + `docker push` (без `build-push-action`).
-- Имя образа: `ghcr.io/elenabelyasnik/vpe04-app:main`
+- Имя образа: `ghcr.io/elenabelyasnik/vpe04-test-github-actions-docker-gitflow:main` (формируется динамически).
 - Для логина в GHCR используется автоматический `GITHUB_TOKEN` (без PAT).
 - Ветка `main` актуальна, все изменения запушены.
