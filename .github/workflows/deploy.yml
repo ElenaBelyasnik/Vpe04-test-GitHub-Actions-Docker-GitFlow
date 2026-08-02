@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/Vpe04-test-GitHub-Actions-Docker-GitFlow
+  IMAGE_NAME: elena-belyasnik/vpe04-test-github-actions-docker-gitflow
 
 jobs:
   # ===================== ДЖОБА 1: СБОРКА И ПУШ В GHCR =====================
@@ -61,8 +61,8 @@ jobs:
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
             # Определяем тег образа (берём SHA коммита)
-            IMAGE_TAG="ghcr.io/${{ github.repository_owner }}/Vpe04-test-GitHub-Actions-Docker-GitFlow:${{ github.sha }}"
-            LATEST_TAG="ghcr.io/${{ github.repository_owner }}/Vpe04-test-GitHub-Actions-Docker-GitFlow:latest"
+            IMAGE_TAG="ghcr.io/elena-belyasnik/vpe04-test-github-actions-docker-gitflow:${{ github.sha }}"
+            LATEST_TAG="ghcr.io/elena-belyasnik/vpe04-test-github-actions-docker-gitflow:latest"
 
             # Скачиваем свежий образ
             docker pull $IMAGE_TAG
