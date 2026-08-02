@@ -21,21 +21,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Log in to GitHub Container Registry
-        if: github.event_name == 'push'
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Build and push Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: ghcr.io/elena-belyasnik/vpe04-test-github-actions-docker-gitflow:main
-          provenance: false
+        run: |
+          docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+          docker build -t ghcr.io/elena-belyasnik/vpe04-test-github-actions-docker-gitflow:main .
+          docker push ghcr.io/elena-belyasnik/vpe04-test-github-actions-docker-gitflow:main
 
   # ===================== ДЖОБА 2: РАЗВЁРТЫВАНИЕ НА СЕРВЕРЕ =====================
   deploy:
